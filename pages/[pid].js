@@ -3,11 +3,11 @@ import fs from 'fs/promises';
 import { Fragment } from 'react';
 
 function ProductDetailPage(props) {
-  const loadedProduct = props;
+  const { loadedProduct } = props;
 
   return (
     <Fragment>
-      <h1>{loadedProduct.title}</h1>
+      <h1>{loadedProduct && loadedProduct.title}</h1>
       <p>{loadedProduct.description}</p>
     </Fragment>
   );
@@ -28,6 +28,17 @@ export async function getStaticProps(context) {
     props: {
       loadedProduct: product,
     },
+  };
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { pid: 'p1' } },
+      { params: { pid: 'p2' } },
+      { params: { pid: 'p3' } },
+    ],
+    fallback: false,
   };
 }
 
