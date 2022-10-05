@@ -40,6 +40,7 @@ export async function getStaticProps(context) {
   };
 }
 
+// getStaticPaths: tells next which instances of this page to pre-generate
 export async function getStaticPaths() {
   const data = await getData();
   const ids = data.products.map((product) => product.id);
