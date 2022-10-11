@@ -5,8 +5,8 @@ function UserProfilePage(props) {
 }
 
 export default UserProfilePage;
-
-// getServerSideProps: expects same format as getStaticProps.
+// --getServerSideProps--
+// expects same format as getStaticProps.
 // instead of getting generated in advance, it loads props in realtime.
 // it -only- runs on the server, -after- deployment
 export async function getServerSideProps(context) {

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
-function LastSalesPage() {
-  const [sales, setSales] = useState();
+function LastSalesPage(props) {
+  // use response from server-side query as initial props
+  const [sales, setSales] = useState(props.sales);
 
   // -- useSWR --
   // data-fetching hook; takes 2 args:
@@ -35,8 +36,7 @@ function LastSalesPage() {
   if (error) {
     return <p>Failed to load</p>;
   }
-
-  if (!data || !sales) {
+  if (!data && !sales) {
     return <p>Loading...</p>;
   }
 
@@ -52,19 +52,31 @@ function LastSalesPage() {
 }
 
 export async function getStaticProps() {
-  fetch('https://nextjs-course-cb02f-default-rtdb.firebaseio.com/sales.json')
-    .then((res) => res.json())
-    .then((data) => {
-      const transformedSales = [];
+  // example of combining server-side with client-side data fetching
+  // aka. pre-rendering pages with data
+  const response = await fetch(
+    'https://nextjs-course-cb02f-default-rtdb.firebaseio.com/sales.json'
+  );
+  const data = await response.json();
+  const transformedSales = [];
 
-      for (const key in data) {
-        transformedSales.push({
-          id: key,
-          username: data[key].username,
-          volume: data[key].volume,
-        });
-      }
+  for (const key in data) {
+    transformedSales.push({
+      id: key,
+      username: data[key].username,
+      volume: data[key].volume,
     });
+  }
+
+  return {
+    props: {
+      sales: transformedSales,
+      // --revalidate--
+      // optional prop, num of secs to revalidate query after deployment
+      // note: not recommended for production build?
+      revalidate: 10,
+    },
+  };
 }
 
 export default LastSalesPage;
